@@ -35,7 +35,7 @@
 
 typedef unsigned char byte;
 
-char *bcrypt(const char *, const char *);
+char *bcrypt(char *, const char *, const char *);
 void encode_salt(char *, u_int8_t *, u_int16_t, u_int8_t);
 
 /* These methods came from the Erlang port command tutorial:
@@ -72,7 +72,7 @@ read_cmd(byte *buf)
 static int
 write_buf(int fd, byte *buf, int len)
 {
-    int i, done = 0; 
+    int i, done = 0;
     do {
         if ((i = write(fd, buf+done, len-done)) < 0) {
             if (errno != EINTR)
@@ -150,7 +150,7 @@ process_hashpw(ETERM *pid, ETERM *data)
     ETERM *pattern, *pwd, *slt, *pwd_bin, *slt_bin;
     char password[1024];
     char salt[1024];
-    char *ret = NULL;
+    char encrypted[1024] = { 0 };
 
     (void)memset(&password, '\0', sizeof(password));
     (void)memset(&salt, '\0', sizeof(salt));
@@ -168,11 +168,10 @@ process_hashpw(ETERM *pid, ETERM *data)
         } else {
             memcpy(password, ERL_BIN_PTR(pwd_bin), ERL_BIN_SIZE(pwd_bin));
             memcpy(salt, ERL_BIN_PTR(slt_bin), ERL_BIN_SIZE(slt_bin));
-            if (NULL == (ret = bcrypt(password, salt)) ||
-                0 == strcmp(ret, ":")) {
+            if (bcrypt(encrypted, password, salt)) {
                 retval = process_reply(pid, CMD_HASHPW, "Invalid salt");
             } else {
-                retval = process_reply(pid, CMD_HASHPW, ret);
+                retval = process_reply(pid, CMD_HASHPW, encrypted);
             }
         }
         erl_free_term(pwd);
