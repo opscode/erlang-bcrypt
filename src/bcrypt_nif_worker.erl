@@ -27,7 +27,7 @@ hashpw(Password, Salt) ->
     gen_server:call(?MODULE, {hashpw, Password, Salt}, infinity).
 
 init([]) ->
-    {ok, Default} = application:get_env(bcrypt, default_log_rounds),
+    Default = envy:get(bcrypt, default_log_rounds, non_neg_integer),
     Ctx = bcrypt_nif:create_ctx(),
     {ok, #state{default_log_rounds = Default, context = Ctx}}.
 

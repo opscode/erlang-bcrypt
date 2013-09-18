@@ -26,3 +26,6 @@ logs/*
 
 ## Temporary script for compiling the port
 build_port.sh
+
+## Deps
+deps

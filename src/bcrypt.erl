@@ -12,9 +12,8 @@ start() -> application:start(bcrypt).
 stop()  -> application:stop(bcrypt).
 
 mechanism() ->
-    {ok, M} = application:get_env(bcrypt, mechanism),
-    M.
-
+    envy:get(bcrypt, mechanism, atom).
+   
 gen_salt() -> do_gen_salt(mechanism()).
 gen_salt(Rounds) -> do_gen_salt(mechanism(), Rounds).
 hashpw(Password, Salt) -> do_hashpw(mechanism(), Password, Salt).

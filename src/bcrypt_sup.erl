@@ -18,8 +18,7 @@ init([]) ->
     NifChildren
         = [{bcrypt_nif_worker, {bcrypt_nif_worker, start_link, []}, permanent,
             16#ffffffff, worker, [bcrypt_nif_worker]}],
-    case application:get_env(bcrypt, mechanism) of
-        undefined  -> {stop, no_mechanism_defined};
-        {ok, nif}  -> {ok, {{one_for_all, 1, 1}, NifChildren}};
-        {ok, port} -> {ok, {{one_for_all, 15, 60}, PortChildren}}
+    case envy:get(bcrypt, mechanism, atom)  of
+        nif  -> {ok, {{one_for_all, 1, 1}, NifChildren}};
+        port -> {ok, {{one_for_all, 15, 60}, PortChildren}}
     end.
