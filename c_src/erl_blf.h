@@ -42,6 +42,8 @@
 #define u_int64_t uint64_t
 #endif
 
+#include <sys/types.h>
+
 /* Schneier specifies a maximum key length of 56 bytes.
  * This ensures that every key bit affects every cipher
  * bit.  However, the subkeys can hold up to 72 bytes.
