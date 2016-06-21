@@ -22,7 +22,7 @@
 
 %% API
 -export([init/0]).
--export([gen_salt/1, hashpw/5, create_ctx/0]).
+-export([gen_salt/1, hashpw/2]).
 
 -on_load(init/0).
 
@@ -61,24 +61,14 @@ encode_salt(_R, _LogRounds) ->
     nif_stub_error(?LINE).
 
 %%--------------------------------------------------------------------
-%% @doc Create a context which hashes passwords in a separate thread.
-%% @spec create_ctx() -> term()
-%% @end
-%%--------------------------------------------------------------------
-create_ctx() ->
-    nif_stub_error(?LINE).
-
-%%--------------------------------------------------------------------
 %% @doc Hash the specified password and the salt using the OpenBSD
 %% Blowfish password hashing algorithm. Returns the hashed password.
 %% @spec hashpw(Ctx::term(),
-%%              Ref::reference(),
-%%              Pid::pid(),
 %%              Password::binary(),
 %%              Salt::binary()) -> string()
 %% @end
 %%--------------------------------------------------------------------
-hashpw(_Ctx, _Ref, _Pid, _Password, _Salt) ->
+hashpw(_Password, _Salt) ->
     nif_stub_error(?LINE).
 
 nif_stub_error(Line) ->
