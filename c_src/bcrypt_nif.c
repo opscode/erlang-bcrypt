@@ -113,37 +113,6 @@ static ERL_NIF_TERM hashpw(ErlNifEnv *env, ErlNifBinary bpass, ErlNifBinary bsal
         enif_make_string(env, encrypted, ERL_NIF_LATIN1));
 }
 
-/*static ERL_NIF_TERM bcrypt_hashpw(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[])
-{
-    ctx_t *ctx;
-    task_t *task;
-    ErlNifPid pid;
-
-    if (argc != 5)
-        return enif_make_badarg(env);
-
-    bcrypt_privdata_t *priv = (bcrypt_privdata_t*)enif_priv_data(env);
-
-    if (!enif_get_resource(env, argv[0], priv->bcrypt_rt, (void**)(&ctx)))
-        return enif_make_badarg(env);
-
-    if (!enif_is_ref(env, argv[1]))
-        return enif_make_badarg(env);
-
-    if (!enif_get_local_pid(env, argv[2], &pid))
-        return enif_make_badarg(env);
-
-    ERL_NIF_TERM orig_terms[] = { argv[4], argv[3] };
-    task = alloc_init_task(HASH, argv[1], pid, 2, orig_terms);
-
-    if (!task)
-        return enif_make_badarg(env);
-
-    async_queue_push(ctx->queue, task);
-
-    return enif_make_atom(env, "ok");
-}*/
-
 static ErlNifFunc bcrypt_nif_funcs[] =
 {
     {"encode_salt", 2, bcrypt_encode_salt},
