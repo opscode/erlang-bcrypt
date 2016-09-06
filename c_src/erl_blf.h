@@ -34,6 +34,8 @@
 #ifndef _ERL_BLF_H_
 #define _ERL_BLF_H_
 
+#include <sys/types.h>
+
 /* Solaris compatibility */
 #ifdef __sun
 #define u_int8_t uint8_t
