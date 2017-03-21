@@ -5,7 +5,7 @@
 
 -behaviour(gen_server).
 
--export([start_link/0]).
+-export([start_link/0, start_link_pooled/0]).
 -export([gen_salt/0, gen_salt/1]).
 -export([hashpw/2]).
 
@@ -18,7 +18,10 @@
           context
          }).
 
-start_link() -> gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+start_link() ->
+    gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
+start_link_pooled() ->
+    gen_server:start_link(?MODULE, ?MODULE, [], []).
 
 gen_salt() -> gen_server:call(?MODULE, gen_salt, infinity).
 gen_salt(Rounds) ->
