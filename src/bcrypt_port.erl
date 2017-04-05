@@ -39,11 +39,11 @@ start_link() ->
 stop() -> gen_server:call(?MODULE, stop).
 
 gen_salt(Pid) ->
-    R = crypto:rand_bytes(16),
+    R = crypto_rand_bytes(16),
     gen_server:call(Pid, {encode_salt, R}, infinity).
 
 gen_salt(Pid, LogRounds) ->
-    R = crypto:rand_bytes(16),
+    R = crypto_rand_bytes(16),
     gen_server:call(Pid, {encode_salt, R, LogRounds}, infinity).
 
 hashpw(Pid, Password, Salt) ->
@@ -106,3 +106,15 @@ handle_info({Port, {exit_status, Status}}, #state{port=Port}=State) ->
     ?BCRYPT_WARNING("Port died: ~p", [Status]),
     {stop, port_died, State};
 handle_info(Msg, _) -> exit({unknown_info, Msg}).
+
+-ifdef(namespaced_types).
+crypto_rand_bytes(N) ->
+    try
+        crypto:strong_rand_bytes(N)
+    catch
+        low_entropy -> list_to_binary(lists:map(fun(_) -> rand:uniform(256) - 1 end, lists:seq(1,N)))
+    end.
+-else.
+crypto_rand_bytes(N) ->
+    crypto:rand_bytes(N).
+-endif.
