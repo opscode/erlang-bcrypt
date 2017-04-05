@@ -54,7 +54,7 @@ init() ->
 %%--------------------------------------------------------------------
 gen_salt(LogRounds)
   when is_integer(LogRounds), LogRounds < 32, LogRounds > 3 ->
-    R = crypto:rand_bytes(16),
+    R = crypto_rand_bytes(16),
     encode_salt(R, LogRounds).
 
 encode_salt(_R, _LogRounds) ->
@@ -83,3 +83,16 @@ hashpw(_Ctx, _Ref, _Pid, _Password, _Salt) ->
 
 nif_stub_error(Line) ->
     erlang:nif_error({nif_not_loaded, module, ?MODULE, line, Line}).
+
+
+-ifdef(namespaced_types).
+crypto_rand_bytes(N) ->
+    try
+        crypto:strong_rand_bytes(N)
+    catch
+        low_entropy -> list_to_binary(lists:map(fun(_) -> rand:uniform(256) - 1 end, lists:seq(1,N)))
+    end.
+-else.
+crypto_rand_bytes(N) ->
+    crypto:rand_bytes(N).
+-endif.
